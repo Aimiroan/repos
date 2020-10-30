@@ -7,8 +7,27 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1080" Width="1920">
     <Grid>
-        <Button x:Name="But1" Content="Show No Problem" HorizontalAlignment="Left" Margin="47,50,0,0" VerticalAlignment="Top" Width="129" Click="But1_Click" Height="42"/>
-        <Rectangle x:Name="Rec1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="954" Margin="274,50,0,0" Stroke="Black" VerticalAlignment="Top" Width="1604"/>
-        <Button x:Name="But2" Content="Show Problem" HorizontalAlignment="Left" Margin="47,150,0,0" VerticalAlignment="Top" Width="129" Click="But2_Click" Height="42"/>
+        <TabControl HorizontalAlignment="Left" Height="1049" VerticalAlignment="Top" Width="1912">
+            <TabItem Header="Main View">
+                <Grid Background="#FFE5E5E5" Height="1021" VerticalAlignment="Top">
+                    <Button x:Name="But1" Content="Show No Problem" HorizontalAlignment="Left" Margin="45,54,0,0" VerticalAlignment="Top" Width="130" Click="But1_Click" Height="42"/>
+                    <Button x:Name="But2" Content="Show Problem" HorizontalAlignment="Left" Margin="45,148,0,0" VerticalAlignment="Top" Width="129" Click="But2_Click" Height="42"/>
+                    <Button x:Name="But3" Content="Switch View" HorizontalAlignment="Left" Margin="45,240,0,0" VerticalAlignment="Top" Width="129" Click="But3_Click" Height="42"/>
+                    <Rectangle x:Name="Rec1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" Stroke="Black" VerticalAlignment="Top" Width="1604"/>
+                    <Image x:Name="mainImage" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/MainImage.png"/>
+                    <Image x:Name="inletValveA" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" RenderTransformOrigin="2.98,0.24" Source="D:/Test/Pictures/InletValveA.png"/>
+                    <Image x:Name="inletValveB" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/InletValveB.png"/>
+                    <Image x:Name="outletValveA" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/OutletValveA.png"/>
+                    <Image x:Name="outletValveB" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/OutletValveB.png"/>
+                    <Image x:Name="primSealA" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/PrimSealA.png"/>
+                    <Image x:Name="primSealB" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/PrimSealB.png"/>
+                    <Image x:Name="notSure" HorizontalAlignment="Left" Height="954" Margin="282,47,0,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/NotYetSure.png"/>
+                    <Image x:Name="mainImage2" HorizontalAlignment="Left" Height="954" Margin="470,47,-168,0" VerticalAlignment="Top" Width="1604" Source="D:/Test/Pictures/MainImage2.png"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Schematics">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
