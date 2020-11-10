@@ -22,30 +22,45 @@ namespace WpfApp1
     {
         readonly SolidColorBrush b = new SolidColorBrush();
         List<KeyValuePair<Image, bool>> problems = new List<KeyValuePair<Image, bool>>();
-        bool view = false;
+        bool viewSwitched = false;
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeProblems();
 
-            var value = problems.Where(kvp => kvp.Key == mainImage2).Select(kvp => kvp.Value).ToString();
-            Console.WriteLine("Test: " + value + " : Test end");
+            foreach (KeyValuePair<Image, bool> problem in problems)
+            {
+                if (problem.Key == mainImage2 && problem.Value == false)
+                {
+                    but3.Visibility = Visibility.Hidden;
+                }
+                else if (problem.Key == mainImage2 && problem.Value == true)
+                {
+                    but3.Visibility = Visibility.Visible;
+                }
+            }
 
             SetAllHidden();
             mainImage2.Visibility = Visibility.Hidden;
+            mainImage3.Visibility = Visibility.Hidden;
+            mainImage2Border.Visibility = Visibility.Hidden;
+            mainImage3Border.Visibility = Visibility.Hidden;
         }
 
         protected void InitializeProblems()
         {
-            problems.Add(new KeyValuePair<Image, bool>(inletValveA, false));
+            problems.Add(new KeyValuePair<Image, bool>(inletValveA, true));
             problems.Add(new KeyValuePair<Image, bool>(inletValveB, true));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveA, false));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveB, false));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveA, true));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveB, true));
             problems.Add(new KeyValuePair<Image, bool>(primSealA, true));
             problems.Add(new KeyValuePair<Image, bool>(primSealB, true));
             problems.Add(new KeyValuePair<Image, bool>(notSure, true));
+            problems.Add(new KeyValuePair<Image, bool>(notSure2, true));
+            problems.Add(new KeyValuePair<Image, bool>(notSure3, true));
             problems.Add(new KeyValuePair<Image, bool>(mainImage2, true));
+            problems.Add(new KeyValuePair<Image, bool>(mainImage3, true));
         }
 
         private void But1_Click(object sender, RoutedEventArgs e)
@@ -57,38 +72,51 @@ namespace WpfApp1
         {
             ShowProblems();
         }
-        
+
         private void But3_Click(object sender, RoutedEventArgs e)
         {
-            if (view == false)
+            if (viewSwitched == false)
             {
                 SetAllHidden();
                 mainImage.Visibility = Visibility.Hidden;
                 mainImage2.Visibility = Visibility.Visible;
-                view = true;
-            } else
+                mainImage2Border.Visibility = Visibility.Visible;
+                mainImage3.Visibility = Visibility.Visible;
+                mainImage3Border.Visibility = Visibility.Visible;
+                viewSwitched = true;
+            }
+            else
             {
                 ShowProblems();
                 mainImage.Visibility = Visibility.Visible;
                 mainImage2.Visibility = Visibility.Hidden;
-                view = false;
+                mainImage2Border.Visibility = Visibility.Hidden;
+                mainImage3.Visibility = Visibility.Hidden;
+                mainImage3Border.Visibility = Visibility.Hidden;
+                viewSwitched = false;
             }
         }
 
         protected void SetAllHidden()
         {
-            foreach (KeyValuePair<Image, bool> img in problems)
+            if (!viewSwitched)
             {
-                img.Key.Visibility = Visibility.Hidden;
+                foreach (KeyValuePair<Image, bool> img in problems)
+                {
+                    img.Key.Visibility = Visibility.Hidden;
+                }
             }
         }
 
         protected void ShowProblems()
         {
-            foreach (KeyValuePair<Image, bool> img in problems)
+            if (!viewSwitched)
             {
-                if (img.Value == true & img.Key != mainImage2)
-                    img.Key.Visibility = Visibility.Visible;
+                foreach (KeyValuePair<Image, bool> img in problems)
+                {
+                    if (img.Value == true && img.Key != mainImage3)
+                        img.Key.Visibility = Visibility.Visible;
+                }
             }
         }
     }

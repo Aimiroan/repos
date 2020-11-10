@@ -94,5 +94,29 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\MainImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\MainImage2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\InletValveA.png" />
+    <Resource Include="Pictures\InletValveB.png" />
+    <Resource Include="Pictures\NotYetSure.png" />
+    <Resource Include="Pictures\OutletValveA.png" />
+    <Resource Include="Pictures\OutletValveB.png" />
+    <Resource Include="Pictures\PrimSealA.png" />
+    <Resource Include="Pictures\PrimSealB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\NotYetSure2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\NotYetSure3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\MainImage3.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
