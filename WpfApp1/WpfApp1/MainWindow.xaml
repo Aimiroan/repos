@@ -36,7 +36,32 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Schematics">
-                <Grid Background="#FFE5E5E5"/>
+                <FlowDocumentReader>
+                    <FlowDocument Background="#FFE5E5E5">
+                        <Table CellSpacing="5">
+                            <Table.Columns>
+                                <TableColumn />
+                                <TableColumn />
+                                <TableColumn />
+                                <TableColumn />
+                            </Table.Columns>
+
+                            <TableRowGroup>
+                                <TableRow Background="LightGoldenrodYellow">
+                                    <TableCell>
+                                        <Paragraph FontSize="14" FontWeight="Bold">Order</Paragraph>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Paragraph FontSize="14" FontWeight="Bold">Advice</Paragraph>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Paragraph FontSize="14" FontWeight="Bold">Location</Paragraph>
+                                    </TableCell>
+                                </TableRow>
+                            </TableRowGroup>
+                        </Table>
+                    </FlowDocument>
+                </FlowDocumentReader>
             </TabItem>
         </TabControl>
     </Grid>

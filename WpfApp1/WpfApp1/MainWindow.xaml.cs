@@ -23,6 +23,7 @@ namespace WpfApp1
         readonly SolidColorBrush b = new SolidColorBrush();
         List<KeyValuePair<Image, bool>> problems = new List<KeyValuePair<Image, bool>>();
         bool viewSwitched = false;
+        int solutionCount = 0;
 
         public MainWindow()
         {
