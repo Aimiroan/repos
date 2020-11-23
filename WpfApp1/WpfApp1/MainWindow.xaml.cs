@@ -23,12 +23,14 @@ namespace WpfApp1
         readonly SolidColorBrush b = new SolidColorBrush();
         List<KeyValuePair<Image, bool>> problems = new List<KeyValuePair<Image, bool>>();
         bool viewSwitched = false;
-        int solutionCount = 0;
+
+        int solutionCount = 8;
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeProblems();
+            InitializeTable();
 
             foreach (KeyValuePair<Image, bool> problem in problems)
             {
@@ -51,17 +53,65 @@ namespace WpfApp1
 
         protected void InitializeProblems()
         {
-            problems.Add(new KeyValuePair<Image, bool>(inletValveA, true));
-            problems.Add(new KeyValuePair<Image, bool>(inletValveB, true));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveA, true));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveB, true));
+            problems.Add(new KeyValuePair<Image, bool>(inletValveA, false));
+            problems.Add(new KeyValuePair<Image, bool>(inletValveB, false));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveA, false));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveB, false));
             problems.Add(new KeyValuePair<Image, bool>(primSealA, true));
-            problems.Add(new KeyValuePair<Image, bool>(primSealB, true));
-            problems.Add(new KeyValuePair<Image, bool>(notSure, true));
-            problems.Add(new KeyValuePair<Image, bool>(notSure2, true));
-            problems.Add(new KeyValuePair<Image, bool>(notSure3, true));
-            problems.Add(new KeyValuePair<Image, bool>(mainImage2, true));
-            problems.Add(new KeyValuePair<Image, bool>(mainImage3, true));
+            problems.Add(new KeyValuePair<Image, bool>(primSealB, false));
+            problems.Add(new KeyValuePair<Image, bool>(notSure, false));
+            problems.Add(new KeyValuePair<Image, bool>(notSure2, false));
+            problems.Add(new KeyValuePair<Image, bool>(notSure3, false));
+            problems.Add(new KeyValuePair<Image, bool>(mainImage2, false));
+            problems.Add(new KeyValuePair<Image, bool>(mainImage3, false));
+        }
+
+        protected void InitializeTable()
+        {
+            FlowDocument flowDoc = new FlowDocument();
+            Table table = new Table();
+
+            docReader.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            docReader.Document = flowDoc;
+            flowDoc.Blocks.Add(table);
+            table.CellSpacing = 10;
+            table.Background = Brushes.White;
+            int numberOfColumns = 3;
+
+            for(int x = 0; x < numberOfColumns; x++)
+            {
+                table.Columns.Add(new TableColumn());
+
+                if (x % 2 == 0)
+                    table.Columns[x].Background = Brushes.Beige;
+                else
+                    table.Columns[x].Background = Brushes.LightSteelBlue;
+            }
+
+            table.RowGroups.Add(new TableRowGroup());
+            for (int x = 0; x < solutionCount; x++)
+            {
+                table.RowGroups[0].Rows.Add(new TableRow());
+            }
+            
+            TableRow currentRow = table.RowGroups[0].Rows[0];
+            currentRow.Background = Brushes.Silver;
+            currentRow.FontSize = 24;
+            currentRow.FontWeight = FontWeights.Bold;
+
+            currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Order"))));
+            currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Advice"))));
+            currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Location"))));
+
+            table.RowGroups[0].Rows.Add(new TableRow());
+            currentRow = table.RowGroups[0].Rows[1];
+            currentRow.FontSize = 18;
+            for (int x = 0; x < solutionCount; x++)
+            {
+                int y = x + 1;
+                currentRow = table.RowGroups[0].Rows[y];
+                currentRow.Cells.Add(new TableCell(new Paragraph(new Run(y.ToString()))));
+            }
         }
 
         private void But1_Click(object sender, RoutedEventArgs e)
@@ -119,6 +169,11 @@ namespace WpfApp1
                         img.Key.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        protected void CheckSolutionCount()
+        {
+
         }
     }
 }

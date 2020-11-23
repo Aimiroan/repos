@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920">
+        Title="MainWindow" Height="1080" Width="1920" WindowState="Maximized" WindowStyle="None">
     <Grid>
-        <TabControl HorizontalAlignment="Left" Height="1049" VerticalAlignment="Top" Width="1912">
+        <TabControl HorizontalAlignment="Left" Height="1192" VerticalAlignment="Top" Width="1912" Margin="0,0,0,-120">
             <TabItem Header="Main View">
-                <Grid Background="#FFE5E5E5" Height="1021" VerticalAlignment="Top">
+                <Grid Background="#FFE5E5E5" Height="1165" VerticalAlignment="Top" Margin="0,0,0,-1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="112*"/>
                         <ColumnDefinition Width="1795*"/>
@@ -36,32 +36,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Schematics">
-                <FlowDocumentReader>
-                    <FlowDocument Background="#FFE5E5E5">
-                        <Table CellSpacing="5">
-                            <Table.Columns>
-                                <TableColumn />
-                                <TableColumn />
-                                <TableColumn />
-                                <TableColumn />
-                            </Table.Columns>
-
-                            <TableRowGroup>
-                                <TableRow Background="LightGoldenrodYellow">
-                                    <TableCell>
-                                        <Paragraph FontSize="14" FontWeight="Bold">Order</Paragraph>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Paragraph FontSize="14" FontWeight="Bold">Advice</Paragraph>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Paragraph FontSize="14" FontWeight="Bold">Location</Paragraph>
-                                    </TableCell>
-                                </TableRow>
-                            </TableRowGroup>
-                        </Table>
-                    </FlowDocument>
-                </FlowDocumentReader>
+                <FlowDocumentScrollViewer x:Name="docReader" IsSelectionEnabled="False"/>
             </TabItem>
         </TabControl>
     </Grid>
