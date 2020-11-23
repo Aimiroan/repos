@@ -24,7 +24,7 @@ namespace WpfApp1
         List<KeyValuePair<Image, bool>> problems = new List<KeyValuePair<Image, bool>>();
         bool viewSwitched = false;
 
-        int solutionCount = 8;
+        int solutionCount = 0;
 
         public MainWindow()
         {
@@ -53,21 +53,23 @@ namespace WpfApp1
 
         protected void InitializeProblems()
         {
-            problems.Add(new KeyValuePair<Image, bool>(inletValveA, false));
-            problems.Add(new KeyValuePair<Image, bool>(inletValveB, false));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveA, false));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveB, false));
+            problems.Add(new KeyValuePair<Image, bool>(inletValveA, true));
+            problems.Add(new KeyValuePair<Image, bool>(inletValveB, true));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveA, true));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveB, true));
             problems.Add(new KeyValuePair<Image, bool>(primSealA, true));
-            problems.Add(new KeyValuePair<Image, bool>(primSealB, false));
-            problems.Add(new KeyValuePair<Image, bool>(notSure, false));
-            problems.Add(new KeyValuePair<Image, bool>(notSure2, false));
-            problems.Add(new KeyValuePair<Image, bool>(notSure3, false));
-            problems.Add(new KeyValuePair<Image, bool>(mainImage2, false));
+            problems.Add(new KeyValuePair<Image, bool>(primSealB, true));
+            problems.Add(new KeyValuePair<Image, bool>(notSure, true));
+            problems.Add(new KeyValuePair<Image, bool>(notSure2, true));
+            problems.Add(new KeyValuePair<Image, bool>(notSure3, true));
+            problems.Add(new KeyValuePair<Image, bool>(mainImage2, true));
             problems.Add(new KeyValuePair<Image, bool>(mainImage3, false));
         }
 
         protected void InitializeTable()
         {
+            CheckSolutionCount();
+
             FlowDocument flowDoc = new FlowDocument();
             Table table = new Table();
 
@@ -173,7 +175,8 @@ namespace WpfApp1
 
         protected void CheckSolutionCount()
         {
-
+            // Return the amount of solutions
+            solutionCount = 4;
         }
     }
 }
