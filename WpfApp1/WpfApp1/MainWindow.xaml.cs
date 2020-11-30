@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,7 +21,6 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly SolidColorBrush b = new SolidColorBrush();
         List<KeyValuePair<Image, bool>> problems = new List<KeyValuePair<Image, bool>>();
         bool viewSwitched = false;
 
