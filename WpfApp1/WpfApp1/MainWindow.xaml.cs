@@ -124,6 +124,7 @@ namespace WpfApp1
         private void But2_Click(object sender, RoutedEventArgs e)
         {
             ShowProblems();
+            CheckNewMessage();
         }
 
         private void But3_Click(object sender, RoutedEventArgs e)
@@ -177,6 +178,19 @@ namespace WpfApp1
         {
             // Return the amount of solutions
             solutionCount = 4;
+        }
+
+        [DllImport("DiagnosticsDLL.dll")]
+        public static extern bool HasNewMessage();
+
+        [DllImport("DiagnosticsDLL.dll")]
+        public static extern IntPtr GetLastMessage();
+
+        private void CheckNewMessage()
+        {
+            Console.WriteLine(HasNewMessage());
+            IntPtr lastMessage = GetLastMessage();
+            Console.WriteLine(Marshal.PtrToStringAnsi(lastMessage));
         }
     }
 }
