@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WpfApp1
 {
@@ -80,7 +82,7 @@ namespace WpfApp1
             table.Background = Brushes.White;
             int numberOfColumns = 3;
 
-            for(int x = 0; x < numberOfColumns; x++)
+            for (int x = 0; x < numberOfColumns; x++)
             {
                 table.Columns.Add(new TableColumn());
 
@@ -95,7 +97,7 @@ namespace WpfApp1
             {
                 table.RowGroups[0].Rows.Add(new TableRow());
             }
-            
+
             TableRow currentRow = table.RowGroups[0].Rows[0];
             currentRow.Background = Brushes.Silver;
             currentRow.FontSize = 24;
@@ -124,7 +126,7 @@ namespace WpfApp1
         private void But2_Click(object sender, RoutedEventArgs e)
         {
             ShowProblems();
-            CheckNewMessage();
+            GetNewMessage();
         }
 
         private void But3_Click(object sender, RoutedEventArgs e)
@@ -186,11 +188,11 @@ namespace WpfApp1
         [DllImport("DiagnosticsDLL.dll")]
         public static extern IntPtr GetLastMessage();
 
-        private void CheckNewMessage()
+        private string GetNewMessage()
         {
-            Console.WriteLine(HasNewMessage());
             IntPtr lastMessage = GetLastMessage();
             Console.WriteLine(Marshal.PtrToStringAnsi(lastMessage));
+            return Marshal.PtrToStringAnsi(lastMessage);
         }
     }
 }
