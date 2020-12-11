@@ -25,8 +25,13 @@ namespace WpfApp1
     {
         List<KeyValuePair<Image, bool>> problems = new List<KeyValuePair<Image, bool>>();
         bool viewSwitched = false;
+        IntPtr lastMessage;
+        int reason = 0;
 
         int solutionCount = 0;
+
+        int percentileA = 70;
+        int percentileB = 30;
 
         public MainWindow()
         {
@@ -55,16 +60,16 @@ namespace WpfApp1
 
         protected void InitializeProblems()
         {
-            problems.Add(new KeyValuePair<Image, bool>(inletValveA, true));
-            problems.Add(new KeyValuePair<Image, bool>(inletValveB, true));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveA, true));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveB, true));
-            problems.Add(new KeyValuePair<Image, bool>(primSealA, true));
-            problems.Add(new KeyValuePair<Image, bool>(primSealB, true));
-            problems.Add(new KeyValuePair<Image, bool>(notSure, true));
-            problems.Add(new KeyValuePair<Image, bool>(notSure2, true));
-            problems.Add(new KeyValuePair<Image, bool>(notSure3, true));
-            problems.Add(new KeyValuePair<Image, bool>(mainImage2, true));
+            problems.Add(new KeyValuePair<Image, bool>(inletValveA, false));
+            problems.Add(new KeyValuePair<Image, bool>(inletValveB, false));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveA, false));
+            problems.Add(new KeyValuePair<Image, bool>(outletValveB, false));
+            problems.Add(new KeyValuePair<Image, bool>(primSealA, false));
+            problems.Add(new KeyValuePair<Image, bool>(primSealB, false));
+            problems.Add(new KeyValuePair<Image, bool>(notSure, false));
+            problems.Add(new KeyValuePair<Image, bool>(notSure2, false));
+            problems.Add(new KeyValuePair<Image, bool>(notSure3, false));
+            problems.Add(new KeyValuePair<Image, bool>(mainImage2, false));
             problems.Add(new KeyValuePair<Image, bool>(mainImage3, false));
         }
 
@@ -125,8 +130,9 @@ namespace WpfApp1
 
         private void But2_Click(object sender, RoutedEventArgs e)
         {
-            ShowProblems();
             GetNewMessage();
+            SetProblems();
+            ShowProblems();
         }
 
         private void But3_Click(object sender, RoutedEventArgs e)
@@ -182,6 +188,65 @@ namespace WpfApp1
             solutionCount = 4;
         }
 
+        protected void SetProblems()
+        {
+            InitializeProblems();
+
+            string a = Marshal.PtrToStringAnsi(lastMessage);
+            string b = string.Empty;
+
+            for (int i=0; i<a.Length; i++)
+            {
+                if (Char.IsDigit(a[i]))
+                    b += a[i];
+            }
+
+            if (b.Length > 0)
+                reason = int.Parse(b);
+
+            switch(reason)
+            {
+                case 1:
+                    if (percentileA >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(primSealA, true));
+
+                    if (percentileB >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(primSealB, true));
+                    break;
+
+                case 2:
+                    if (percentileA >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(outletValveA, true));
+
+                    if (percentileB >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(outletValveB, true));
+                    break;
+
+                case 3:
+                    if (percentileA >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(inletValveA, true));
+
+                    if (percentileB >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(inletValveB, true));
+                    break;
+
+                case 5:
+                    if (percentileA >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(notSure, true));
+                    break;
+
+                case 6:
+                    if (percentileA >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(notSure2, true));
+                    break;
+
+                case 7:
+                    if (percentileA >= 70)
+                        problems.Add(new KeyValuePair<Image, bool>(notSure3, true));
+                    break;
+            }
+        }
+
         [DllImport("DiagnosticsDLL.dll")]
         public static extern bool HasNewMessage();
 
@@ -190,7 +255,7 @@ namespace WpfApp1
 
         private string GetNewMessage()
         {
-            IntPtr lastMessage = GetLastMessage();
+            lastMessage = GetLastMessage();
             Console.WriteLine(Marshal.PtrToStringAnsi(lastMessage));
             return Marshal.PtrToStringAnsi(lastMessage);
         }
