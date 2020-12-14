@@ -31,7 +31,7 @@ namespace WpfApp1
         int solutionCount = 0;
 
         int percentileA = 70;
-        int percentileB = 30;
+        int percentileB = 70;
 
         public MainWindow()
         {
@@ -58,6 +58,9 @@ namespace WpfApp1
             mainImage3Border.Visibility = Visibility.Hidden;
         }
 
+        /*
+         * A method to initialize the images into the created list.
+         */
         protected void InitializeProblems()
         {
             problems.Add(new KeyValuePair<Image, bool>(inletValveA, false));
@@ -73,6 +76,9 @@ namespace WpfApp1
             problems.Add(new KeyValuePair<Image, bool>(mainImage3, false));
         }
 
+        /*
+         * A method to initialize the table rows and columns.
+         */
         protected void InitializeTable()
         {
             CheckSolutionCount();
@@ -130,7 +136,6 @@ namespace WpfApp1
 
         private void But2_Click(object sender, RoutedEventArgs e)
         {
-            GetNewMessage();
             SetProblems();
             ShowProblems();
         }
@@ -170,6 +175,9 @@ namespace WpfApp1
             }
         }
 
+        /*
+         * A method to show the problems which are situated in the pump.
+         */
         protected void ShowProblems()
         {
             if (!viewSwitched)
@@ -182,30 +190,44 @@ namespace WpfApp1
             }
         }
 
+        /*
+         * A method to set the solution count for initializing the table.
+         */
         protected void CheckSolutionCount()
         {
-            // Return the amount of solutions
             solutionCount = 4;
         }
 
+        /*
+         * A method to see which problems are active within the pump.
+         */
         protected void SetProblems()
         {
             InitializeProblems();
 
-            string a = Marshal.PtrToStringAnsi(lastMessage);
+            string message = GetNewMessage();
+
+            string a = message;
             string b = string.Empty;
 
-            for (int i=0; i<a.Length; i++)
+            for (int i = 0; i < a.Length; i++)
             {
-                if (Char.IsDigit(a[i]))
+                if (char.IsDigit(a[i]))
                     b += a[i];
             }
 
             if (b.Length > 0)
                 reason = int.Parse(b);
+            if (b.Length == 0)
+                reason = 0;
 
-            switch(reason)
+            switch (reason)
             {
+                case 0:
+                    problems.Clear();
+                    InitializeProblems();
+                    break;
+
                 case 1:
                     if (percentileA >= 70)
                         problems.Add(new KeyValuePair<Image, bool>(primSealA, true));
@@ -253,11 +275,24 @@ namespace WpfApp1
         [DllImport("DiagnosticsDLL.dll")]
         public static extern IntPtr GetLastMessage();
 
+        /*
+         * A method to retrieve the latest message if there is one available.
+         */
         private string GetNewMessage()
         {
-            lastMessage = GetLastMessage();
-            Console.WriteLine(Marshal.PtrToStringAnsi(lastMessage));
-            return Marshal.PtrToStringAnsi(lastMessage);
+            string message;
+
+            if (HasNewMessage())
+            {
+                lastMessage = GetLastMessage();
+                message = Marshal.PtrToStringAnsi(lastMessage);
+            }
+            else
+            {
+                message = "DLLMain has no reason";
+            }
+
+            return message;
         }
     }
 }
