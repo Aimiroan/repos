@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,8 +15,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
+using Microsoft.Win32;
 
 namespace WpfApp1
 {
@@ -23,8 +28,11 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<KeyValuePair<Image, bool>> problems = new List<KeyValuePair<Image, bool>>();
+        Dictionary<string, bool> problems = new Dictionary<string, bool>();
+        FlowDocument flowDoc = new FlowDocument();
+        Table table = new Table();
         bool viewSwitched = false;
+        bool firstRun = true;
         IntPtr lastMessage;
         int reason = 0;
 
@@ -39,13 +47,13 @@ namespace WpfApp1
             InitializeProblems();
             InitializeTable();
 
-            foreach (KeyValuePair<Image, bool> problem in problems)
+            foreach (KeyValuePair<string, bool> problem in problems)
             {
-                if (problem.Key == mainImage2 && problem.Value == false)
+                if (problem.Key == mainImage2.Name && problem.Value == false)
                 {
                     but3.Visibility = Visibility.Hidden;
                 }
-                else if (problem.Key == mainImage2 && problem.Value == true)
+                else if (problem.Key == mainImage2.Name && problem.Value == true)
                 {
                     but3.Visibility = Visibility.Visible;
                 }
@@ -63,17 +71,17 @@ namespace WpfApp1
          */
         protected void InitializeProblems()
         {
-            problems.Add(new KeyValuePair<Image, bool>(inletValveA, false));
-            problems.Add(new KeyValuePair<Image, bool>(inletValveB, false));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveA, false));
-            problems.Add(new KeyValuePair<Image, bool>(outletValveB, false));
-            problems.Add(new KeyValuePair<Image, bool>(primSealA, false));
-            problems.Add(new KeyValuePair<Image, bool>(primSealB, false));
-            problems.Add(new KeyValuePair<Image, bool>(notSure, false));
-            problems.Add(new KeyValuePair<Image, bool>(notSure2, false));
-            problems.Add(new KeyValuePair<Image, bool>(notSure3, false));
-            problems.Add(new KeyValuePair<Image, bool>(mainImage2, false));
-            problems.Add(new KeyValuePair<Image, bool>(mainImage3, false));
+            problems.Add(inletValveA.Name, false);
+            problems.Add(inletValveB.Name, false);
+            problems.Add(outletValveA.Name, false);
+            problems.Add(outletValveB.Name, false);
+            problems.Add(primSealA.Name, false);
+            problems.Add(primSealB.Name, false);
+            problems.Add(notSure.Name, false);
+            problems.Add(notSure2.Name, false);
+            problems.Add(notSure3.Name, false);
+            problems.Add(mainImage2.Name, false);
+            problems.Add(mainImage3.Name, false);
         }
 
         /*
@@ -81,13 +89,13 @@ namespace WpfApp1
          */
         protected void InitializeTable()
         {
-            CheckSolutionCount();
-
-            FlowDocument flowDoc = new FlowDocument();
-            Table table = new Table();
-
             docReader.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             docReader.Document = flowDoc;
+
+            flowDoc.Blocks.Clear();
+            table.Columns.Clear();
+            table.RowGroups.Clear();
+
             flowDoc.Blocks.Add(table);
             table.CellSpacing = 10;
             table.Background = Brushes.White;
@@ -104,29 +112,44 @@ namespace WpfApp1
             }
 
             table.RowGroups.Add(new TableRowGroup());
-            for (int x = 0; x < solutionCount; x++)
+
+            if (firstRun == true)
             {
+                solutionCount = 1;
+                firstRun = false;
+            }
+            else
+            {
+                solutionCount = problems.Count;
+
+                for (int x = 0; x < solutionCount; x++)
+                {
+                    table.RowGroups[0].Rows.Add(new TableRow());
+                }
+
+                TableRow currentRow = table.RowGroups[0].Rows[0];
+                currentRow.Background = Brushes.Silver;
+                currentRow.FontSize = 24;
+                currentRow.FontWeight = FontWeights.Bold;
+
+                currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Order"))));
+                currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Advice"))));
+                currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Location"))));
+
                 table.RowGroups[0].Rows.Add(new TableRow());
+                currentRow = table.RowGroups[0].Rows[1];
+                currentRow.FontSize = 18;
+                for (int x = 0; x < solutionCount; x++)
+                {
+                    int y = x + 1;
+                    currentRow = table.RowGroups[0].Rows[y];
+                    currentRow.Cells.Add(new TableCell(new Paragraph(new Run(y.ToString()))));
+                }
+
+                solutionCount = 0;
             }
 
-            TableRow currentRow = table.RowGroups[0].Rows[0];
-            currentRow.Background = Brushes.Silver;
-            currentRow.FontSize = 24;
-            currentRow.FontWeight = FontWeights.Bold;
 
-            currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Order"))));
-            currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Advice"))));
-            currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Location"))));
-
-            table.RowGroups[0].Rows.Add(new TableRow());
-            currentRow = table.RowGroups[0].Rows[1];
-            currentRow.FontSize = 18;
-            for (int x = 0; x < solutionCount; x++)
-            {
-                int y = x + 1;
-                currentRow = table.RowGroups[0].Rows[y];
-                currentRow.Cells.Add(new TableCell(new Paragraph(new Run(y.ToString()))));
-            }
         }
 
         private void But1_Click(object sender, RoutedEventArgs e)
@@ -136,6 +159,7 @@ namespace WpfApp1
 
         private void But2_Click(object sender, RoutedEventArgs e)
         {
+            InitializeTable();
             SetProblems();
             ShowProblems();
         }
@@ -164,13 +188,24 @@ namespace WpfApp1
             }
         }
 
+        private void But4_Click(object sender, RoutedEventArgs e)
+        {
+            SaveProblem();
+        }
+
+        private void But5_Click(object sender, RoutedEventArgs e)
+        {
+            LoadProblem();
+        }
+
         protected void SetAllHidden()
         {
             if (!viewSwitched)
             {
-                foreach (KeyValuePair<Image, bool> img in problems)
+                foreach (KeyValuePair<string, bool> img in problems)
                 {
-                    img.Key.Visibility = Visibility.Hidden;
+                    Image image = (Image)this.FindName(img.Key);
+                    image.Visibility = Visibility.Hidden;
                 }
             }
         }
@@ -182,20 +217,15 @@ namespace WpfApp1
         {
             if (!viewSwitched)
             {
-                foreach (KeyValuePair<Image, bool> img in problems)
+                foreach (KeyValuePair<string, bool> img in problems)
                 {
-                    if (img.Value == true && img.Key != mainImage3)
-                        img.Key.Visibility = Visibility.Visible;
+                    if (img.Value == true)
+                    {
+                        Image image = (Image)this.FindName(img.Key);
+                        image.Visibility = Visibility.Visible;
+                    }
                 }
             }
-        }
-
-        /*
-         * A method to set the solution count for initializing the table.
-         */
-        protected void CheckSolutionCount()
-        {
-            solutionCount = 4;
         }
 
         /*
@@ -203,8 +233,6 @@ namespace WpfApp1
          */
         protected void SetProblems()
         {
-            InitializeProblems();
-
             string message = GetNewMessage();
 
             string a = message;
@@ -221,6 +249,7 @@ namespace WpfApp1
             if (b.Length == 0)
                 reason = 0;
 
+            problems.Clear();
             switch (reason)
             {
                 case 0:
@@ -229,42 +258,167 @@ namespace WpfApp1
                     break;
 
                 case 1:
-                    if (percentileA >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(primSealA, true));
+                    if (percentileA >= 70 && percentileB < 70)
+                    {
+                        problems.Add(primSealA.Name, true);
+                        addToTable(reason, "A");
+                    }
 
-                    if (percentileB >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(primSealB, true));
+                    if (percentileB >= 70 && percentileA < 70)
+                    {
+                        problems.Add(primSealB.Name, true);
+                        addToTable(reason, "B");
+                    }
+
+                    if (percentileA >= 70 && percentileB >= 70)
+                    {
+                        problems.Add(primSealA.Name, true);
+                        problems.Add(primSealB.Name, true);
+                        addToTable(reason, "AB");
+                    }
                     break;
 
                 case 2:
-                    if (percentileA >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(outletValveA, true));
+                    if (percentileA >= 70 && percentileB < 70)
+                    {
+                        problems.Add(outletValveA.Name, true);
+                        addToTable(reason, "A");
+                    }
 
-                    if (percentileB >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(outletValveB, true));
+                    if (percentileB >= 70 && percentileA < 70)
+                    {
+                        problems.Add(outletValveB.Name, true);
+                        addToTable(reason, "B");
+                    }
+
+                    if (percentileA >= 70 && percentileB >= 70)
+                    {
+                        problems.Add(outletValveA.Name, true);
+                        problems.Add(outletValveB.Name, true);
+                        addToTable(reason, "AB");
+                    }
                     break;
 
                 case 3:
-                    if (percentileA >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(inletValveA, true));
+                    if (percentileA >= 70 && percentileB < 70)
+                    {
+                        problems.Add(inletValveA.Name, true);
+                        addToTable(reason, "A");
+                    }
 
-                    if (percentileB >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(inletValveB, true));
+                    if (percentileB >= 70 && percentileA < 70)
+                    {
+                        problems.Add(inletValveB.Name, true);
+                        addToTable(reason, "B");
+                    }
+
+                    if (percentileA >= 70 && percentileB >= 70)
+                    {
+                        problems.Add(inletValveA.Name, true);
+                        problems.Add(inletValveB.Name, true);
+                        addToTable(reason, "AB");
+                    }
                     break;
 
                 case 5:
                     if (percentileA >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(notSure, true));
+                    {
+                        problems.Add(notSure.Name, true);
+                        addToTable(reason, "");
+                    }
                     break;
 
                 case 6:
                     if (percentileA >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(notSure2, true));
+                    {
+                        problems.Add(notSure2.Name, true);
+                        addToTable(reason, "");
+                    }
                     break;
 
                 case 7:
                     if (percentileA >= 70)
-                        problems.Add(new KeyValuePair<Image, bool>(notSure3, true));
+                    {
+                        problems.Add(notSure3.Name, true);
+                        addToTable(reason, "");
+                    }
+                    break;
+            }
+        }
+
+        private void addToTable(int problem, string location)
+        {
+            int rowNumber = 1;
+            TableRow currentRow;
+
+            switch (problem)
+            {
+                case 1:
+                    currentRow = table.RowGroups[0].Rows[rowNumber];
+                    if (location == "A")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace primary seal"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A"))));
+                        Console.WriteLine("test");
+                    }
+
+                    if (location == "B")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace primary seal"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
+                    }
+
+                    if (location == "AB")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace primary seal"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A & Pump B"))));
+                    }
+
+                    rowNumber += 1;
+                    break;
+
+                case 2:
+                    currentRow = table.RowGroups[0].Rows[rowNumber];
+                    if (location == "A")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace outlet valve"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A"))));
+                    }
+
+                    if (location == "B")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace outlet valve"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
+                    }
+
+                    if (location == "AB")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace outlet valve"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A & Pump B"))));
+                    }
+                    rowNumber += 1;
+                    break;
+
+                case 3:
+                    currentRow = table.RowGroups[0].Rows[rowNumber];
+                    if (location == "A")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace inlet valve"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A"))));
+                    }
+
+                    if (location == "B")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace inlet valve"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
+                    }
+
+                    if (location == "AB")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace inlet valve"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A & Pump B"))));
+                    }
+                    rowNumber += 1;
                     break;
             }
         }
@@ -293,6 +447,63 @@ namespace WpfApp1
             }
 
             return message;
+        }
+
+        protected void SaveProblem()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "JSON file (*.json)|*.json"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    using (StreamWriter file = File.CreateText(saveFileDialog.FileName))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, problems);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+        }
+
+        protected void LoadProblem()
+        {
+            SetAllHidden();
+
+            Dictionary<string, bool> objectOut = new Dictionary<string, bool>();
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "JSON file (*.json)|*.json"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var problems = File.ReadAllText(openFileDialog.FileName);
+                    objectOut = JsonConvert.DeserializeObject<Dictionary<string, bool>>(problems);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+                problems = objectOut;
+
+                ShowProblems();
+
+                //foreach (KeyValuePair<string, bool> problem in problems)
+                //{
+                //    Console.WriteLine(problem.Value);
+                //}
+            }
         }
     }
 }
