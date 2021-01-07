@@ -35,11 +35,12 @@ namespace WpfApp1
         bool firstRun = true;
         IntPtr lastMessage;
         int reason = 0;
+        int rowNumber = 1;
 
         int solutionCount = 0;
 
-        int percentileA = 70;
-        int percentileB = 70;
+        readonly int percentileA = 70;
+        readonly int percentileB = 70;
 
         public MainWindow()
         {
@@ -77,9 +78,9 @@ namespace WpfApp1
             problems.Add(outletValveB.Name, false);
             problems.Add(primSealA.Name, false);
             problems.Add(primSealB.Name, false);
-            problems.Add(notSure.Name, false);
-            problems.Add(notSure2.Name, false);
-            problems.Add(notSure3.Name, false);
+            problems.Add(pumpHead.Name, false);
+            problems.Add(presDev.Name, false);
+            problems.Add(presRip.Name, false);
             problems.Add(mainImage2.Name, false);
             problems.Add(mainImage3.Name, false);
         }
@@ -161,6 +162,8 @@ namespace WpfApp1
         {
             InitializeTable();
             SetProblems();
+            InitializeTable();
+            SetProblems();
             ShowProblems();
         }
 
@@ -204,7 +207,7 @@ namespace WpfApp1
             {
                 foreach (KeyValuePair<string, bool> img in problems)
                 {
-                    Image image = (Image)this.FindName(img.Key);
+                    Image image = (Image)FindName(img.Key);
                     image.Visibility = Visibility.Hidden;
                 }
             }
@@ -233,6 +236,8 @@ namespace WpfApp1
          */
         protected void SetProblems()
         {
+            rowNumber = 1;
+
             string message = GetNewMessage();
 
             string a = message;
@@ -249,129 +254,117 @@ namespace WpfApp1
             if (b.Length == 0)
                 reason = 0;
 
+            reason = 12;
+
             problems.Clear();
-            switch (reason)
+
+            string c = reason.ToString();
+
+            for (int i = 0; i < c.Length; i++)
             {
-                case 0:
-                    problems.Clear();
-                    InitializeProblems();
-                    break;
+                reason = (int)char.GetNumericValue(c[i]);
 
-                case 1:
-                    if (percentileA >= 70 && percentileB < 70)
-                    {
-                        problems.Add(primSealA.Name, true);
-                        addToTable(reason, "A");
-                    }
+                switch (reason)
+                {
+                    case 0:
+                        problems.Clear();
+                        InitializeProblems();
+                        break;
 
-                    if (percentileB >= 70 && percentileA < 70)
-                    {
-                        problems.Add(primSealB.Name, true);
-                        addToTable(reason, "B");
-                    }
+                    case 1:
+                        if (percentileA >= 70)
+                        {
+                            problems.Add(primSealA.Name, true);
+                            addToTable(reason, "A");
+                        }
 
-                    if (percentileA >= 70 && percentileB >= 70)
-                    {
-                        problems.Add(primSealA.Name, true);
-                        problems.Add(primSealB.Name, true);
-                        addToTable(reason, "AB");
-                    }
-                    break;
+                        if (percentileB >= 70)
+                        {
+                            problems.Add(primSealB.Name, true);
+                            addToTable(reason, "B");
+                        }
+                        break;
 
-                case 2:
-                    if (percentileA >= 70 && percentileB < 70)
-                    {
-                        problems.Add(outletValveA.Name, true);
-                        addToTable(reason, "A");
-                    }
+                    case 2:
+                        if (percentileA >= 70)
+                        {
+                            problems.Add(outletValveA.Name, true);
+                            addToTable(reason, "A");
+                        }
 
-                    if (percentileB >= 70 && percentileA < 70)
-                    {
-                        problems.Add(outletValveB.Name, true);
-                        addToTable(reason, "B");
-                    }
+                        if (percentileB >= 70)
+                        {
+                            problems.Add(outletValveB.Name, true);
+                            addToTable(reason, "B");
+                        }
+                        break;
 
-                    if (percentileA >= 70 && percentileB >= 70)
-                    {
-                        problems.Add(outletValveA.Name, true);
-                        problems.Add(outletValveB.Name, true);
-                        addToTable(reason, "AB");
-                    }
-                    break;
+                    case 3:
+                        if (percentileA >= 70)
+                        {
+                            problems.Add(inletValveA.Name, true);
+                            addToTable(reason, "A");
+                        }
 
-                case 3:
-                    if (percentileA >= 70 && percentileB < 70)
-                    {
-                        problems.Add(inletValveA.Name, true);
-                        addToTable(reason, "A");
-                    }
+                        if (percentileB >= 70)
+                        {
+                            problems.Add(inletValveB.Name, true);
+                            addToTable(reason, "B");
+                        }
+                        break;
 
-                    if (percentileB >= 70 && percentileA < 70)
-                    {
-                        problems.Add(inletValveB.Name, true);
-                        addToTable(reason, "B");
-                    }
+                    case 5:
+                        if (percentileA >= 70)
+                        {
+                            problems.Add(pumpHead.Name, true);
+                            addToTable(reason, "A");
+                        }
 
-                    if (percentileA >= 70 && percentileB >= 70)
-                    {
-                        problems.Add(inletValveA.Name, true);
-                        problems.Add(inletValveB.Name, true);
-                        addToTable(reason, "AB");
-                    }
-                    break;
+                        if (percentileB >= 70)
+                        {
+                            problems.Add(pumpHead.Name, true);
+                            addToTable(reason, "B");
+                        }
+                        break;
 
-                case 5:
-                    if (percentileA >= 70)
-                    {
-                        problems.Add(notSure.Name, true);
-                        addToTable(reason, "");
-                    }
-                    break;
+                    case 6:
+                        if (percentileA >= 70)
+                        {
+                            problems.Add(presDev.Name, true);
+                            addToTable(reason, "");
+                        }
+                        break;
 
-                case 6:
-                    if (percentileA >= 70)
-                    {
-                        problems.Add(notSure2.Name, true);
-                        addToTable(reason, "");
-                    }
-                    break;
-
-                case 7:
-                    if (percentileA >= 70)
-                    {
-                        problems.Add(notSure3.Name, true);
-                        addToTable(reason, "");
-                    }
-                    break;
+                    case 7:
+                        if (percentileA >= 70)
+                        {
+                            problems.Add(presRip.Name, true);
+                            addToTable(reason, "");
+                        }
+                        break;
+                }
             }
         }
 
         private void addToTable(int problem, string location)
         {
-            int rowNumber = 1;
             TableRow currentRow;
 
             switch (problem)
             {
                 case 1:
                     currentRow = table.RowGroups[0].Rows[rowNumber];
+                    currentRow.FontSize = 18;
                     if (location == "A")
                     {
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace primary seal"))));
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A"))));
-                        Console.WriteLine("test");
                     }
 
                     if (location == "B")
                     {
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace primary seal"))));
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
-                    }
-
-                    if (location == "AB")
-                    {
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace primary seal"))));
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A & Pump B"))));
                     }
 
                     rowNumber += 1;
@@ -379,6 +372,7 @@ namespace WpfApp1
 
                 case 2:
                     currentRow = table.RowGroups[0].Rows[rowNumber];
+                    currentRow.FontSize = 18;
                     if (location == "A")
                     {
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace outlet valve"))));
@@ -389,18 +383,13 @@ namespace WpfApp1
                     {
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace outlet valve"))));
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
-                    }
-
-                    if (location == "AB")
-                    {
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace outlet valve"))));
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A & Pump B"))));
                     }
                     rowNumber += 1;
                     break;
 
                 case 3:
                     currentRow = table.RowGroups[0].Rows[rowNumber];
+                    currentRow.FontSize = 18;
                     if (location == "A")
                     {
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace inlet valve"))));
@@ -412,12 +401,37 @@ namespace WpfApp1
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace inlet valve"))));
                         currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
                     }
+                    rowNumber += 1;
+                    break;
 
-                    if (location == "AB")
+                case 5:
+                    currentRow = table.RowGroups[0].Rows[rowNumber];
+                    currentRow.FontSize = 18;
+                    if (location == "A")
                     {
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace inlet valve"))));
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A & Pump B"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace pump head"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A"))));
                     }
+
+                    if (location == "B")
+                    {
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace pump head"))));
+                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
+                    }
+                    rowNumber += 1;
+                    break;
+
+                case 6:
+                    currentRow = table.RowGroups[0].Rows[rowNumber];
+                    currentRow.FontSize = 18;
+                    currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Perform calibration"))));
+                    rowNumber += 1;
+                    break;
+
+                case 7:
+                    currentRow = table.RowGroups[0].Rows[rowNumber];
+                    currentRow.FontSize = 18;
+                    currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Perform dynamic leak test"))));
                     rowNumber += 1;
                     break;
             }
@@ -455,6 +469,7 @@ namespace WpfApp1
             {
                 Filter = "JSON file (*.json)|*.json"
             };
+
             if (saveFileDialog.ShowDialog() == true)
             {
                 try
@@ -497,12 +512,8 @@ namespace WpfApp1
 
                 problems = objectOut;
 
+                InitializeTable();
                 ShowProblems();
-
-                //foreach (KeyValuePair<string, bool> problem in problems)
-                //{
-                //    Console.WriteLine(problem.Value);
-                //}
             }
         }
     }
