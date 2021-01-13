@@ -8,15 +8,15 @@
         Title="Diagnostics" Height="1080" Width="1920" WindowState="Maximized">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="1192" VerticalAlignment="Top" Width="1912" Margin="0,0,0,-120">
-            <TabItem Header="Main View">
+            <TabItem Header="Views">
                 <Grid Background="#FFE5E5E5" Height="1165" VerticalAlignment="Top" Margin="0,0,0,-1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="112*"/>
                         <ColumnDefinition Width="1795*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="but1" Content="Reset" HorizontalAlignment="Left" Margin="45,54,0,0" VerticalAlignment="Top" Width="130" Click="But1_Click" Height="42" Grid.ColumnSpan="2"/>
-                    <Button x:Name="but2" Content="Run Test" HorizontalAlignment="Left" Margin="45,148,0,0" VerticalAlignment="Top" Width="129" Click="But2_Click" Height="42" Grid.ColumnSpan="2"/>
-                    <Button x:Name="but3" Content="Switch View" HorizontalAlignment="Left" Margin="45,373,0,0" VerticalAlignment="Top" Width="129" Click="But3_Click" Height="42" Grid.ColumnSpan="2"/>
+                    <Button x:Name="but1" Content="Reset" HorizontalAlignment="Left" Margin="45,131,0,0" VerticalAlignment="Top" Width="130" Click="But1_Click" Height="42" Grid.ColumnSpan="2"/>
+                    <Button x:Name="but2" Content="Run Test" HorizontalAlignment="Left" Margin="45,47,0,0" VerticalAlignment="Top" Width="130" Click="But2_Click" Height="42" Grid.ColumnSpan="2"/>
+                    <Button x:Name="but3" Content="Switch View" HorizontalAlignment="Left" Margin="45,383,0,0" VerticalAlignment="Top" Width="130" Click="But3_Click" Height="42" Grid.ColumnSpan="2"/>
                     <Rectangle x:Name="rec1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="954" Margin="170.5,47,0,0" Stroke="Black" VerticalAlignment="Top" Width="1604" Grid.Column="1"/>
                     <Image x:Name="mainImage" HorizontalAlignment="Left" Height="954" Margin="170.5,47,0,0" VerticalAlignment="Top" Width="1604" Source="Pictures/MainImage.png" Grid.Column="1"/>
                     <Image x:Name="inletValveA" HorizontalAlignment="Left" Height="954" Margin="170.5,47,0,0" VerticalAlignment="Top" Width="1604" Source="Pictures/InletValveA.png" Grid.Column="1"/>
@@ -33,8 +33,8 @@
                     </Border>
                     <Image x:Name="mainImage3" HorizontalAlignment="Left" Height="737" VerticalAlignment="Top" Width="754" Source="Pictures/MainImage3.png" Margin="170.5,166,0,0" Grid.Column="1"/>
                     <Border x:Name="mainImage3Border" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="720" Margin="170.5,166,0,0" VerticalAlignment="Top" Width="754" Grid.Column="1"/>
-                    <Button x:Name="but4" Content="Save State" HorizontalAlignment="Left" Margin="45,235,0,0" VerticalAlignment="Top" Width="129" Click="But4_Click" Height="42" Grid.ColumnSpan="2"/>
-                    <Button x:Name="but5" Content="Load State" HorizontalAlignment="Left" Margin="45,305,0,0" VerticalAlignment="Top" Width="129" Click="But5_Click" Height="42" Grid.ColumnSpan="2"/>
+                    <Button x:Name="but4" Content="Save State" HorizontalAlignment="Left" Margin="45,215,0,0" VerticalAlignment="Top" Width="130" Click="But4_Click" Height="42" Grid.ColumnSpan="2"/>
+                    <Button x:Name="but5" Content="Load State" HorizontalAlignment="Left" Margin="45,299,0,0" VerticalAlignment="Top" Width="130" Click="But5_Click" Height="42" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Schematics">

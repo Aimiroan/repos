@@ -149,21 +149,20 @@ namespace WpfApp1
 
                 solutionCount = 0;
             }
-
-
         }
 
         private void But1_Click(object sender, RoutedEventArgs e)
         {
             SetAllHidden();
+            table.Columns.Clear();
+            table.RowGroups.Clear();
         }
 
         private void But2_Click(object sender, RoutedEventArgs e)
         {
-            InitializeTable();
+            SetAllHidden();
             SetProblems();
             InitializeTable();
-            SetProblems();
             ShowProblems();
         }
 
@@ -226,9 +225,21 @@ namespace WpfApp1
                     {
                         Image image = (Image)this.FindName(img.Key);
                         image.Visibility = Visibility.Visible;
+
+                        char c = img.Key.Last();
+
+                        string location = "";
+
+                        if (c == 'A')
+                            location = "A";
+                        if (c == 'B')
+                            location = "B";
+
+                        addToTable(img.Key, location);
                     }
                 }
             }
+            rowNumber = 1;
         }
 
         /*
@@ -239,6 +250,8 @@ namespace WpfApp1
             rowNumber = 1;
 
             string message = GetNewMessage();
+
+            Console.WriteLine(message);
 
             string a = message;
             string b = string.Empty;
@@ -253,8 +266,6 @@ namespace WpfApp1
                 reason = int.Parse(b);
             if (b.Length == 0)
                 reason = 0;
-
-            reason = 12;
 
             problems.Clear();
 
@@ -275,13 +286,11 @@ namespace WpfApp1
                         if (percentileA >= 70)
                         {
                             problems.Add(primSealA.Name, true);
-                            addToTable(reason, "A");
                         }
 
                         if (percentileB >= 70)
                         {
                             problems.Add(primSealB.Name, true);
-                            addToTable(reason, "B");
                         }
                         break;
 
@@ -289,13 +298,11 @@ namespace WpfApp1
                         if (percentileA >= 70)
                         {
                             problems.Add(outletValveA.Name, true);
-                            addToTable(reason, "A");
                         }
 
                         if (percentileB >= 70)
                         {
                             problems.Add(outletValveB.Name, true);
-                            addToTable(reason, "B");
                         }
                         break;
 
@@ -303,13 +310,11 @@ namespace WpfApp1
                         if (percentileA >= 70)
                         {
                             problems.Add(inletValveA.Name, true);
-                            addToTable(reason, "A");
                         }
 
                         if (percentileB >= 70)
                         {
                             problems.Add(inletValveB.Name, true);
-                            addToTable(reason, "B");
                         }
                         break;
 
@@ -317,13 +322,6 @@ namespace WpfApp1
                         if (percentileA >= 70)
                         {
                             problems.Add(pumpHead.Name, true);
-                            addToTable(reason, "A");
-                        }
-
-                        if (percentileB >= 70)
-                        {
-                            problems.Add(pumpHead.Name, true);
-                            addToTable(reason, "B");
                         }
                         break;
 
@@ -331,7 +329,6 @@ namespace WpfApp1
                         if (percentileA >= 70)
                         {
                             problems.Add(presDev.Name, true);
-                            addToTable(reason, "");
                         }
                         break;
 
@@ -339,20 +336,20 @@ namespace WpfApp1
                         if (percentileA >= 70)
                         {
                             problems.Add(presRip.Name, true);
-                            addToTable(reason, "");
                         }
                         break;
                 }
             }
         }
 
-        private void addToTable(int problem, string location)
+        private void addToTable(string problem, string location)
         {
             TableRow currentRow;
 
             switch (problem)
             {
-                case 1:
+                case "primSealA":
+                case "primSealB":
                     currentRow = table.RowGroups[0].Rows[rowNumber];
                     currentRow.FontSize = 18;
                     if (location == "A")
@@ -370,7 +367,8 @@ namespace WpfApp1
                     rowNumber += 1;
                     break;
 
-                case 2:
+                case "outletValveA":
+                case "outletValveB":
                     currentRow = table.RowGroups[0].Rows[rowNumber];
                     currentRow.FontSize = 18;
                     if (location == "A")
@@ -387,7 +385,8 @@ namespace WpfApp1
                     rowNumber += 1;
                     break;
 
-                case 3:
+                case "inletValveA":
+                case "inletValveB":
                     currentRow = table.RowGroups[0].Rows[rowNumber];
                     currentRow.FontSize = 18;
                     if (location == "A")
@@ -404,31 +403,21 @@ namespace WpfApp1
                     rowNumber += 1;
                     break;
 
-                case 5:
+                case "pumpHead":
                     currentRow = table.RowGroups[0].Rows[rowNumber];
                     currentRow.FontSize = 18;
-                    if (location == "A")
-                    {
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace pump head"))));
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump A"))));
-                    }
-
-                    if (location == "B")
-                    {
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace pump head"))));
-                        currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Pump B"))));
-                    }
+                    currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Replace pump head"))));
                     rowNumber += 1;
                     break;
 
-                case 6:
+                case "presDiv":
                     currentRow = table.RowGroups[0].Rows[rowNumber];
                     currentRow.FontSize = 18;
                     currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Perform calibration"))));
                     rowNumber += 1;
                     break;
 
-                case 7:
+                case "presRip":
                     currentRow = table.RowGroups[0].Rows[rowNumber];
                     currentRow.FontSize = 18;
                     currentRow.Cells.Add(new TableCell(new Paragraph(new Run("Perform dynamic leak test"))));
