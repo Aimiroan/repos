@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Microsoft.Win32;
 
-namespace WpfApp1
+namespace Diagnostics
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -36,6 +36,7 @@ namespace WpfApp1
         IntPtr lastMessage;
         int reason = 0;
         int rowNumber = 1;
+        bool newMessage = true;
 
         int solutionCount = 0;
 
@@ -160,17 +161,25 @@ namespace WpfApp1
 
         private void But2_Click(object sender, RoutedEventArgs e)
         {
-            SetAllHidden();
-            SetProblems();
-            InitializeTable();
-            ShowProblems();
+            try
+            {
+                SetAllHidden();
+                SetProblems();
+                InitializeTable();
+                ShowProblems();
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         private void But3_Click(object sender, RoutedEventArgs e)
         {
             if (viewSwitched == false)
             {
-                SetAllHidden();
+                pumpHead.Visibility = Visibility.Hidden;
+
+                //SetAllHidden();
                 mainImage.Visibility = Visibility.Hidden;
                 mainImage2.Visibility = Visibility.Visible;
                 mainImage2Border.Visibility = Visibility.Visible;
@@ -180,7 +189,9 @@ namespace WpfApp1
             }
             else
             {
-                ShowProblems();
+                pumpHead.Visibility = Visibility.Visible;
+
+                //ShowProblems();
                 mainImage.Visibility = Visibility.Visible;
                 mainImage2.Visibility = Visibility.Hidden;
                 mainImage2Border.Visibility = Visibility.Hidden;
@@ -215,16 +226,22 @@ namespace WpfApp1
         /*
          * A method to show the problems which are situated in the pump.
          */
-        protected void ShowProblems()
+        public void ShowProblems()
         {
             if (!viewSwitched)
             {
+                bool switchView = false;
                 foreach (KeyValuePair<string, bool> img in problems)
                 {
                     if (img.Value == true)
                     {
                         Image image = (Image)this.FindName(img.Key);
                         image.Visibility = Visibility.Visible;
+
+                        if (img.Key == "mainImage2")
+                        {
+                            switchView = true;
+                        }
 
                         char c = img.Key.Last();
 
@@ -238,6 +255,14 @@ namespace WpfApp1
                         addToTable(img.Key, location);
                     }
                 }
+                if (switchView == true)
+                {
+                    but3.Visibility = Visibility.Visible;
+                } else
+                {
+                    but3.Visibility = Visibility.Hidden;
+                }
+                switchView = false;
             }
             rowNumber = 1;
         }
@@ -245,99 +270,102 @@ namespace WpfApp1
         /*
          * A method to see which problems are active within the pump.
          */
-        protected void SetProblems()
+        public void SetProblems()
         {
             rowNumber = 1;
 
             string message = GetNewMessage();
 
-            Console.WriteLine(message);
-
-            string a = message;
-            string b = string.Empty;
-
-            for (int i = 0; i < a.Length; i++)
+            if (newMessage == true)
             {
-                if (char.IsDigit(a[i]))
-                    b += a[i];
-            }
 
-            if (b.Length > 0)
-                reason = int.Parse(b);
-            if (b.Length == 0)
-                reason = 0;
+                string a = message;
+                string b = string.Empty;
 
-            problems.Clear();
-
-            string c = reason.ToString();
-
-            for (int i = 0; i < c.Length; i++)
-            {
-                reason = (int)char.GetNumericValue(c[i]);
-
-                switch (reason)
+                for (int i = 0; i < a.Length; i++)
                 {
-                    case 0:
-                        problems.Clear();
-                        InitializeProblems();
-                        break;
+                    if (char.IsDigit(a[i]))
+                        b += a[i];
+                }
 
-                    case 1:
-                        if (percentileA >= 70)
-                        {
-                            problems.Add(primSealA.Name, true);
-                        }
+                if (b.Length > 0)
+                    reason = int.Parse(b);
+                if (b.Length == 0)
+                    reason = 0;
 
-                        if (percentileB >= 70)
-                        {
-                            problems.Add(primSealB.Name, true);
-                        }
-                        break;
+                problems.Clear();
 
-                    case 2:
-                        if (percentileA >= 70)
-                        {
-                            problems.Add(outletValveA.Name, true);
-                        }
+                string c = reason.ToString();
 
-                        if (percentileB >= 70)
-                        {
-                            problems.Add(outletValveB.Name, true);
-                        }
-                        break;
+                for (int i = 0; i < c.Length; i++)
+                {
+                    reason = (int)char.GetNumericValue(c[i]);
 
-                    case 3:
-                        if (percentileA >= 70)
-                        {
-                            problems.Add(inletValveA.Name, true);
-                        }
+                    switch (reason)
+                    {
+                        case 0:
+                            problems.Clear();
+                            InitializeProblems();
+                            break;
 
-                        if (percentileB >= 70)
-                        {
-                            problems.Add(inletValveB.Name, true);
-                        }
-                        break;
+                        case 1:
+                            if (percentileA >= 70)
+                            {
+                                problems.Add(primSealA.Name, true);
+                            }
 
-                    case 5:
-                        if (percentileA >= 70)
-                        {
-                            problems.Add(pumpHead.Name, true);
-                        }
-                        break;
+                            if (percentileB >= 70)
+                            {
+                                problems.Add(primSealB.Name, true);
+                            }
+                            break;
 
-                    case 6:
-                        if (percentileA >= 70)
-                        {
-                            problems.Add(presDev.Name, true);
-                        }
-                        break;
+                        case 2:
+                            if (percentileA >= 70)
+                            {
+                                problems.Add(outletValveA.Name, true);
+                            }
 
-                    case 7:
-                        if (percentileA >= 70)
-                        {
-                            problems.Add(presRip.Name, true);
-                        }
-                        break;
+                            if (percentileB >= 70)
+                            {
+                                problems.Add(outletValveB.Name, true);
+                            }
+                            break;
+
+                        case 3:
+                            if (percentileA >= 70)
+                            {
+                                problems.Add(inletValveA.Name, true);
+                            }
+
+                            if (percentileB >= 70)
+                            {
+                                problems.Add(inletValveB.Name, true);
+                            }
+                            break;
+
+                        case 5:
+                            if (percentileA >= 70)
+                            {
+                                problems.Add(pumpHead.Name, true);
+                                problems.Add(mainImage2.Name, true);
+                            }
+                            break;
+
+                        case 6:
+                            if (percentileA >= 70)
+                            {
+                                problems.Add(presDev.Name, true);
+                            }
+                            break;
+
+                        case 7:
+                            if (percentileA >= 70)
+                            {
+                                problems.Add(presRip.Name, true);
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -435,7 +463,7 @@ namespace WpfApp1
         /*
          * A method to retrieve the latest message if there is one available.
          */
-        private string GetNewMessage()
+        public string GetNewMessage()
         {
             string message;
 
@@ -443,10 +471,12 @@ namespace WpfApp1
             {
                 lastMessage = GetLastMessage();
                 message = Marshal.PtrToStringAnsi(lastMessage);
+                newMessage = true;
             }
             else
             {
                 message = "DLLMain has no reason";
+                newMessage = false;
             }
 
             return message;
